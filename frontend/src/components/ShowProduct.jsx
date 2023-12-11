@@ -1,8 +1,7 @@
 import React from 'react'
-import { useState } from 'react'
-import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 const ShowProduct = ({value}) => {
-    
+    const navigate = useNavigate()
     
     
     
@@ -14,6 +13,7 @@ const ShowProduct = ({value}) => {
             <img src={`/api/v1/product/product-photo/${item._id}`} alt="" className='h-full object-cover' />
             <p className='text-xl font-bold'>{item.name}</p>
             <p>{item.price}</p>
+            <button onClick={()=>{navigate(`/product/${item.slug}`)}}>Detail</button>
           </div>
         ))}
         </div>
