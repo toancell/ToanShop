@@ -81,7 +81,7 @@ export const getProductController = async (req, res) => {
 // get infor single product
 export const getSingleProductController = async( req,res) =>{
   try{
-    const product = await productModel.findOne({slug: req.params.slug}).select("-photo").polulate("category")
+    const product = await productModel.findOne({slug: req.params.slug}).select("-photo").populate("category")
     res.status(200).send({
       success: true,
       message: 'get single product successfully',
@@ -182,20 +182,20 @@ export const updateProductController = async (req,res) => {
 //filter
 export const productFilterControllers = async (req, res) => {
   try {
-    const { selected } = req.body;
+    const { valueCategory,selected } = req.body;
     let products = [];
 
     if(selected === "high-to-low"){
-      products = await productModel.find({}).sort({ price: -1 }); 
+      products = await productModel.find({valueCategory}).sort({ price: -1 }); 
     } 
     if( selected === "low-to-high"){
-      products = await productModel.find({}).sort({price:1});
+      products = await productModel.find({valueCategory}).sort({price:1});
     }  
     if( selected === "a-to-z"){
-      products = await productModel.find({}).sort({name: -1});
+      products = await productModel.find({valueCategory}).sort({name: -1});
     } 
     if( selected === "z-to-a"){
-      products = await productModel.find({}).sort({name: 1});
+      products = await productModel.find({valueCategory}).sort({name: 1});
     }
  
     res.status(200).send({
@@ -211,3 +211,36 @@ export const productFilterControllers = async (req, res) => {
     });
   }
 };
+
+export const searchProductController = async (req,res) => {
+  try{
+    const {keyword} = req.params;
+    const result = await productModel.find({
+      $or: [{name : {$regex  : keyword , $options : "i"}},
+      {description : {$regex : keyword , $options : "i"}}
+    ]
+    }).select("-photo")
+  }catch(err){
+    res.status(500).send({
+      message: "Failed",
+      success: false,
+      err
+    })
+  }
+}
+
+export const relatedProductController = async (req, res) => {
+  try{
+    const {pid,cid} = req.params
+    const products = await productModel.find({
+      category: cid,
+      _id: { $ne: pid },
+    }).select("-photo").limit(3).populate("category")
+  }catch(err){
+    res.status(500).send({
+      success: false,
+      message: "Failed",
+      err
+    })
+  }
+}

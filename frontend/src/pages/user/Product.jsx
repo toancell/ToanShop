@@ -68,10 +68,7 @@ const Product = () => {
           <Group onChange={handleChange} value={valueCategory}>
             {
             category.map((item) => (
-             
                 <Radio value={item.name} name='category' key={item._id}> {item.name}</Radio>
-              
-               
             ))
           }
           </Group>

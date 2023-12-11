@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import {HiOutlineUserCircle} from "react-icons/hi"
 import {BsCartFill} from "react-icons/bs"
 import { useAuth } from '../context/auth'
-
+import SearchInput from './SearchInput'
 const Header = () => {
   const [auth,setAuth] = useAuth()
   
@@ -32,9 +32,14 @@ const Header = () => {
           </div>
         </Link>
         <div className='flex items-center gap-6'>
-          <nav className='flex gap-4 md:gap-6 text-base md:text-lg' >
+          <nav className='flex items-center gap-4 md:gap-6 text-base md:text-lg' >
+            <div>
+              <SearchInput />
+            </div>
+            
             <Link to={""}>Home</Link>
             <Link to={"product"}>Product</Link>
+            <Link to={"magazine"}>Magazines</Link>
             <Link to={"about"}>About</Link>
             <Link to={"contact"}>Contact</Link>
           </nav>

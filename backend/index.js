@@ -6,7 +6,7 @@ import connectDB from "./config/db.js";
 import authRoute from "./routes/authRoute.js"
 import categoryRoute from "./routes/categoryRoute.js"
 import productRoute from "./routes/productRoute.js"
-
+import magazineRoute from "./routes/magazineRoute.js"
 
 // configure env
 dotenv.config()
@@ -23,6 +23,7 @@ app.use(morgan('dev'))
 app.use("/api/v1/auth", authRoute)
 app.use("/api/v1/category", categoryRoute)
 app.use("/api/v1/product", productRoute)
+app.use("/api/v1/magazine", magazineRoute)
 // rest api 
 
 app.get("/",(req, res) => {

@@ -1,3 +1,4 @@
+
 import { useEffect,useState,useContext,createContext } from "react";
 
 const AuthContext= createContext()
@@ -17,7 +18,7 @@ const AuthProvider= ({children}) =>{
                     token: parseData.token
                 })
             }
-        }, [auth]);
+        }, []);
     return (
         <AuthContext.Provider value={[auth,setAuth]}>
             {children}
