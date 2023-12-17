@@ -43,3 +43,35 @@ export const getMagazinePostController = async (req, res) =>{
         })
     }
 }
+export const getSingleMagazinePost = async (req, res) =>{
+    try{
+        const magazine = await magazineModel.findOne({ slug: req.params.slug}).select("-photo")
+        res.status(200).send({
+            success: true,
+            message: "Success",
+            magazine
+        })
+    }catch(err){
+        res.status(500).send({
+            message: "Failed",
+            success: false,
+            err
+        })
+    }
+}
+export const getPhotoMagazine = async (req, res) =>{
+    try{
+        const magazine = await magazineModel.findById(req.params.mid).select("photo")
+        if(magazine.photo.data){
+            res.set('Content-type', magazine.photo.contentType)
+            return res.status(200).send(magazine.photo.data)
+        }
+    }catch(err){
+        res.status(500).send({
+            message: "Failed",
+            success: false,
+            err
+        })
+    }
+    
+}

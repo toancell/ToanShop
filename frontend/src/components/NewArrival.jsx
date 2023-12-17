@@ -6,7 +6,7 @@ const NewArrival = () => {
   const [product, setProduct]= useState([])
   const getAllProducts = async () =>{
     try{
-      const {data} = await axios.get("api/v1/product/get-product");
+      const {data} = await axios.get("/api/v1/product/new-arrival");
       if(data?.success){
         setProduct(data?.product)
       }

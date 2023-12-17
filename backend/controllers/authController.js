@@ -1,9 +1,11 @@
 import userModel from "../models/userModel.js";
 import { hashPassword,comparePassword } from "../helpers/authHelper.js";
 import JWT from "jsonwebtoken"
+import fs from "fs"
 export const registerController = async (req,res) =>{
     try{
-        const {name,email,password,phone,address} = req.body;
+        const {name,email,password,phone,address} = req.fields;
+        const {photo} = req.files
         if(!name){
             return res.send({error:"Name is required"})
         } 
@@ -19,6 +21,9 @@ export const registerController = async (req,res) =>{
         if(!address){
             return res.send({error:"Address is required"})
         }
+        if(!photo){
+            return res.send({error:"Photo is required"})
+        }
         // check user
         const exisitingUser = await userModel.findOne({email})
         // existing user 
@@ -31,7 +36,12 @@ export const registerController = async (req,res) =>{
         // register user
         const hashedPassword = await hashPassword(password) // ma hoa password
         // save
-        const user= await new userModel({name, email, password: hashedPassword,phone,address}).save();
+        const user = new userModel({name, email, password: hashedPassword,phone,address});
+        if(photo){
+            user.photo.data =  fs.readFileSync(photo.path);
+            user.photo.contentType = photo.type ;
+        }
+        await user.save();
         res.status(201).send({
             success: true,
             message: "User register successfully",
@@ -57,7 +67,7 @@ export const loginController = async (req, res) => {
             })
         }
         // check user
-        const user = await userModel.findOne({email})
+        const user = await userModel.findOne({email}).select("-photo")
         if(!user){
             return res.status(404).send({
                 success: false,
@@ -76,13 +86,7 @@ export const loginController = async (req, res) => {
         res.status(200).send({
             success: true,
             message: "Login succesfully",
-            user:{
-                name: user.name,
-                email: user.email,
-                phone: user.phone,
-                address: user.address,
-                role: user.role,
-            },
+            user,
             token,
         })
     } catch(err){
@@ -92,5 +96,35 @@ export const loginController = async (req, res) => {
             message: "Error in Login",
             err
         })
+    }
+}
+export const photoUser = async (req, res) => {
+    try{
+        const user = await userModel.findById(req.params.pid).select("photo")
+        if(user.photo.data){
+            res.set("Content-type", user.photo.contentType)
+            return res.status(200).send(user.photo.data)}
+        }catch(err){
+            console.log(err)
+            res.status(500).send({
+                success: false,
+            })    
+    }
+}
+
+export const getAllUsers = async (req, res) => {
+    try{
+        const user = await userModel.find({}).select("-photo")
+        res.status(200).send({
+            success: true,
+            message: " Success",
+            countTotal: user.length,
+            user
+        })
+    }catch(err){
+        console.log(err)
+        res.status(500).send({
+                success: false,
+        }) 
     }
 }

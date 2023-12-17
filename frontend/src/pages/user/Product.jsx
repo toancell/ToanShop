@@ -55,8 +55,7 @@ const Product = () => {
     getAllProducts();
   },[]);
   useEffect(()=>{
-    if(selected ==="default"){getAllProducts()}
-    else{filterProduct()}
+    filterProduct()
 
   },[selected]);
   return (

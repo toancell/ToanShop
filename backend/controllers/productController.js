@@ -24,19 +24,14 @@ export const productController = async (req, res) => {
         return res.status(500).send({ message: "Description required" });
       case !category:
         return res.status(500).send({ message: "Category required" });
-      case !shipping:
-        return res.status(500).send({ message: "Shipping" });
-      case photo && photo.size > 1000000:
-        return res
-          .status(500)
-          .send({ message: "Photo is required and should be less than 1mb" });
+      
     }
     const product = new productModel({
       name,
       description,
       price,
       category,
-      shipping,
+      shipping : "shipping",
       quantity,
       slug: slugify(name),
     });
@@ -62,7 +57,7 @@ export const productController = async (req, res) => {
 
 export const getProductController = async (req, res) => {
   try {
-    const product = await productModel.find({ }).populate('category').select("-photo").limit(12).sort({createAt: -1});
+    const product = await productModel.find({ }).populate('category').select("-photo").sort({createAt: -1});
     res.status(200).send({
       success: true,
       countTotal: product.length,
@@ -78,6 +73,25 @@ export const getProductController = async (req, res) => {
     });
   }
 };
+// get new arrival
+export const getNewArrival = async (req, res) => {
+  try{
+    const product = await productModel.find({}).populate('category').select("-photo").limit(5)
+    res.status(200).send({
+      success: true,
+      message: "Product successfully",
+      product,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({
+      message: "Failed",
+      success: false,
+      err,
+    });
+  }
+}
+
 // get infor single product
 export const getSingleProductController = async( req,res) =>{
   try{
@@ -158,8 +172,6 @@ export const updateProductController = async (req,res) => {
         return res.status(500).send({ message: "Description required" });
       case !category:
         return res.status(500).send({ message: "Category required" });
-      case !shipping:
-        return res.status(500).send({ message: "Shipping" });
       case photo && photo.size > 1000000:
         return res
           .status(500)
@@ -197,7 +209,7 @@ export const productFilterControllers = async (req, res) => {
     if( selected === "z-to-a"){
       products = await productModel.find({valueCategory}).sort({name: 1});
     }
- 
+    
     res.status(200).send({
       success: true,
       message: "Ok",

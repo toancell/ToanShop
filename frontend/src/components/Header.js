@@ -5,9 +5,10 @@ import {HiOutlineUserCircle} from "react-icons/hi"
 import {BsCartFill} from "react-icons/bs"
 import { useAuth } from '../context/auth'
 import SearchInput from './SearchInput'
+import { useCart } from '../context/cart'
 const Header = () => {
   const [auth,setAuth] = useAuth()
-  
+  const [cart,setCart] = useCart()
   const [showMenu, setShowMenu]= useState(false);
   const handleShowMenu =()=>{
     setShowMenu( prev  => !prev)
@@ -25,6 +26,7 @@ const Header = () => {
   
   return (
     <header className=" shadow-md w-full h-16 px-2 md:px-4 z-50 bg-white">
+      
       <div className="flex items-center h-full justify-between">
         <Link to={""}>
           <div className="h-12">
@@ -44,8 +46,8 @@ const Header = () => {
             <Link to={"contact"}>Contact</Link>
           </nav>
           <div className='text-2xl text-slate-600 relative'>
-            <BsCartFill />
-            <div className='absolute -top-2 -right-1 text-white bg-red-500 h-5 w-5 rounded-full m-0 p-0 text-sm text-center'>0</div>
+            <Link to={"cart"}><BsCartFill /></Link>
+            <div className='absolute -top-2 -right-1 text-white bg-red-500 h-5 w-5 rounded-full m-0 p-0 text-sm text-center'>{cart.length}</div>
           </div>
           {
             !auth.user ? (
@@ -64,13 +66,13 @@ const Header = () => {
               </div>
             ) : (
               auth.user.role === 0 ? (
-                <div>
+              <div className='flex items-center gap-5'>
                 <div>Hi, {auth.user.name}</div>
                 <div className='text-2xl text-slate-600'>
                   
-                <div className="text-3xl cursor-pointer" onClick={handleShowMenu}>
-                  <HiOutlineUserCircle />
-                </div>
+                    <div className="text-3xl cursor-pointer" onClick={handleShowMenu}>
+                        <img src={`/api/v1/auth/user/${auth.user._id}`} alt="" className='h-10 rounded-[50%]' />
+                    </div>
                 {
                   showMenu && (
                     <div className="absolute right-2 bg-white py-2 px-2 shadow drop-shadow-md flex flex-col">
@@ -78,15 +80,16 @@ const Header = () => {
                     </div>
                   )
                 }
-              </div>
+                </div>
               </div>
               ) : (
-                <div className='text-2xl text-slate-600'>
-                <h1>Hi, admin</h1>
-                <div className="text-3xl cursor-pointer" onClick={handleShowMenu}>
-                  <HiOutlineUserCircle />
-                </div>
-                {
+                <div className=' flex items-center gap-5'>
+                  <div>Hi, admin</div>
+                  <div className='text-2xl text-slate-600'>
+                      <div className="text-3xl cursor-pointer" onClick={handleShowMenu}>
+                        <img src={  `/api/v1/auth/user/${auth.user._id}` ? `/api/v1/auth/user/${auth.user._id}` : {logo} } alt="" className='h-10 rounded-[50%]' />
+                      </div>
+                  {
                   showMenu && (
                     <div className="absolute right-2 bg-white py-2 px-2 shadow drop-shadow-md flex flex-col">
                       <Link to={"dashboard"} className="whitespace-nowrap cursor-pointer">Dashboard</Link>
@@ -94,6 +97,7 @@ const Header = () => {
                     </div>
                   )
                 }
+                </div>
               </div>
               )
             )

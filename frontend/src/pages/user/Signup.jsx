@@ -19,51 +19,58 @@ const Signup = () => {
   const handleShowConfirmPassword = () => {
     setShowConfirmPassword((prev) => !prev);
   };
-  const [data, setData] = useState({
+  const [user, setUser] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
-    image: "",
-    phoneNumber: "",
+    photo: "",
+    phone: "",
     address: "",
+    image:""
   });
   const handleOnChange = (e) => {
     const { name, value } = e.target;
-    setData((prev) => {
+    setUser((prev) => {
       return {
         ...prev,
         [name]: value,
       };
     });
-    console.log(data);
   };
   const handleUploadImage = async (e) => {
-    const data = await ImagetoBase64(e.target.files[0]);
-    setData((prev) => {
+    const image = await ImagetoBase64(e.target.files[0]);
+    const image1 = e.target.files[0]
+    setUser((prev) => {
       return {
         ...prev,
-        image: data,
+        photo: image1,
+        image
       };
     });
   };
   const handleSubmit = async (e) => {
+    console.log(user)
     e.preventDefault();
-    const { name, email, password, confirmPassword, phone, address } = data;
+    const { name, email, password, confirmPassword, phone, address, photo } = user;
     // check password
-    if (name && email && password && confirmPassword && phone && address) {
+    if (name && email && password && confirmPassword && phone && address && photo) {
       if (password !== confirmPassword) {
         alert(" password not equal");
       } else {
+        
         try {
-          const res = await axios.post("/api/v1/auth/register", {
-            name,
-            email,
-            password,
-            phone,
-            address,
-          });
-          if (res && res.data.success) {
+          const userForm = new FormData();
+          userForm.append("name", name)
+          userForm.append("email", email)
+          userForm.append("password", password)
+          userForm.append("phone",phone)
+          userForm.append("address", address)
+          userForm.append("photo",photo)
+          const {data} = await axios.post("/api/v1/auth/register", 
+            userForm
+          );
+          if (data?.success) {
             navigate("/login");
           } else {
             alert("Error");
@@ -83,7 +90,7 @@ const Signup = () => {
       <div className="w-full max-w-sm bg-gray-50  m-auto flex items-center flex-col p-4">
         <div className="w-20 h-20 overflow-hidden rounded-full drop-shadow-md shadow-md m-auto relative">
           <img
-            src={data.image ? data.image : loginSignupImage}
+            src={user.image ? user.image : loginSignupImage}
             className="w-full"
             alt=""
           />
@@ -110,7 +117,7 @@ const Signup = () => {
             type="text"
             id="name"
             name="name"
-            value={data.name}
+            value={user.name}
             onChange={handleOnChange}
             placeholder="..."
             className="mt-1 w-full  bg-slate-200 px-2 py-1 rounded focus-within:outline-blue-300"
@@ -121,7 +128,7 @@ const Signup = () => {
             type="email"
             id="email"
             name="email"
-            value={data.email}
+            value={user.email}
             onChange={handleOnChange}
             placeholder="..."
             className="mt-1 w-full  bg-slate-200 px-2 py-1 rounded  focus-within:outline-blue-300"
@@ -132,7 +139,7 @@ const Signup = () => {
             <input
               type={showPassword ? "text" : "password"}
               id="password"
-              value={data.password}
+              value={user.password}
               onChange={handleOnChange}
               name="password"
               placeholder="..."
@@ -146,7 +153,7 @@ const Signup = () => {
           <div className="flex py-1 bg-slate-200 rounded mt-1 mb-2 items-center  focus-within:outline focus-within:outline-blue-300">
             <input
               type={showConfirmPassword ? "text" : "password"}
-              value={data.confirmPassWord}
+              value={user.confirmPassWord}
               onChange={handleOnChange}
               id="confirmPassword"
               name="confirmPassword"
@@ -163,7 +170,7 @@ const Signup = () => {
             type="number"
             id="phone"
             name="phone"
-            value={data.phone}
+            value={user.phone}
             onChange={handleOnChange}
             placeholder="..."
             className="mt-1 w-full  bg-slate-200 px-2 py-1 rounded  focus-within:outline-blue-300"
@@ -174,7 +181,7 @@ const Signup = () => {
             type="text"
             id="address"
             name="address"
-            value={data.address}
+            value={user.address}
             onChange={handleOnChange}
             placeholder="..."
             className="mt-1 w-full  bg-slate-200 px-2 py-1 rounded  focus-within:outline-blue-300"

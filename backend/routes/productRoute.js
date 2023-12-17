@@ -4,11 +4,12 @@ import { productController, productFilterControllers } from "../controllers/prod
 import { getProductController } from "../controllers/productController.js";
 import {getSingleProductController}  from "../controllers/productController.js";
 import {productPhotoController} from "../controllers/productController.js";
-import { updateProductController, searchProductController, relatedProductController } from "../controllers/productController.js";
+import { updateProductController, searchProductController, relatedProductController, getNewArrival } from "../controllers/productController.js";
 const router = express.Router();
 
 router.post("/create-product", formidable(), productController);
 router.get("/get-product", getProductController);
+router.get("/new-arrival", getNewArrival);
 router.get("/get-product/:slug", getSingleProductController);
 router.get("/product-photo/:pid", productPhotoController);
 router.post("/update-product", formidable(), updateProductController)

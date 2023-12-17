@@ -18,6 +18,8 @@ import CreateCategories from "./pages/admin/CreateCategories.jsx";
 import SearchResult from "./pages/user/SearchResult.jsx";
 import SingleProduct from "./pages/user/SingleProduct.jsx";
 import Magazine from "./pages/user/Magazine.jsx";
+import SingleMagazine from "./pages/user/SingleMagazine.jsx";
+import Cart from "./pages/user/Cart.jsx";
 function App() {
   return (
     <>
@@ -37,6 +39,8 @@ function App() {
         <Route path="dashboard/create-categories" element={<CreateCategories/>} />
         <Route path="/search" element={<SearchResult />} />
         <Route path="/magazine" element={<Magazine/>} />
+        <Route path="/magazine/:slug" element={<SingleMagazine/>}/>
+        <Route path="/cart" element={<Cart/>} />
       </Routes>
     </>
   );
